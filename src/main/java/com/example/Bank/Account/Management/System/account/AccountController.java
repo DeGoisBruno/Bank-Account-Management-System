@@ -1,6 +1,7 @@
 package com.example.Bank.Account.Management.System.account;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +25,12 @@ public class AccountController {
     }
 
     @PostMapping
-    public void createNewAccount(@RequestBody Account account) {
-        accountService.addNewAccount(account);
+    //public void createNewAccount(@RequestBody Account account) {
+//        accountService.addNewAccount(account);
+//    }
+    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+        Account createdAccount = accountService.createAccount(account);
+        return ResponseEntity.ok(createdAccount);
     }
 
     @DeleteMapping(path = "{accountId}")

@@ -41,6 +41,21 @@ public class AccountService {
         accountRepository.deleteById(accountId);
     }
 
+    public Account createAccount(Account account) {
+        String accountNumber = generateUniqueAccountNumber();
+        account.setAccountNumber(accountNumber);
+        return accountRepository.save(account);
+    }
+
+    private String generateUniqueAccountNumber() {
+        String accountNumber;
+        do {
+            accountNumber = AccountNumberGenerator.generateAccountNumber();
+        } while (accountRepository.findAccountByAccountNumber(accountNumber).isPresent());
+        return accountNumber;
+    }
+
+
     @Transactional
     public void updateAccount(Long id, String name, double balance) {
         Account account = accountRepository.findById(id)
