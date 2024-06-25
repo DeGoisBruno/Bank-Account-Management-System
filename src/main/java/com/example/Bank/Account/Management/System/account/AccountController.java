@@ -11,7 +11,6 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @RequestMapping(path = "api/v1/account")
 public class AccountController {
 
-
     private final AccountService accountService;
 
     @Autowired
@@ -40,7 +39,5 @@ public class AccountController {
         @RequestParam(required = false) String name,
         @RequestParam(required = false) double balance) {
     accountService.updateAccount(accountId, name, balance);
-
-
     }
 }

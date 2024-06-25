@@ -11,6 +11,7 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
+
     private final AccountRepository accountRepository;
 
     @Autowired
@@ -24,9 +25,9 @@ public class AccountService {
 
     public void addNewAccount(Account account) {
         Optional<Account> accountOptional = accountRepository
-        .findAccountByName(account.getName());
+        .findAccountByAccountNumber(account.getAccountNumber());
         if (accountOptional.isPresent()) {
-            throw new IllegalStateException("Name Exists");
+            throw new IllegalStateException("Account with account number " + account.getAccountNumber() + " already exists");
         }
         accountRepository.save(account);
     }
@@ -35,7 +36,7 @@ public class AccountService {
         accountRepository.findById(accountId);
         boolean exists = accountRepository.existsById(accountId);
         if (!exists) {
-            throw new IllegalStateException("account with id " + accountId + " does not exists");
+            throw new IllegalStateException("Account with id " + accountId + " does not exists");
         }
         accountRepository.deleteById(accountId);
     }
@@ -44,7 +45,7 @@ public class AccountService {
     public void updateAccount(Long id, String name, double balance) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(
-                        "account with id " + id + " does not exist"));
+                        "Account with id " + id + " does not exist"));
                 if (name != null && !name.isEmpty() &&
                 !Objects.equals(account.getName(), name)) {
                     account.setName(name);
