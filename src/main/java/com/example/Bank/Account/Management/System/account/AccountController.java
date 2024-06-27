@@ -23,7 +23,7 @@ public class AccountController {
         return accountService.getAccount();
     }
 
-    // GET endpoint to fetch an account by ID
+    // Fetch an account by ID
     @GetMapping("/{accountId}")
     public ResponseEntity<Account> getAccountById(@PathVariable Long accountId) {
         Account account = accountService.getAccountById(accountId);
@@ -34,6 +34,15 @@ public class AccountController {
     public ResponseEntity<Account> createAccount(@RequestBody Account account) {
         Account createdAccount = accountService.createAccount(account);
         return ResponseEntity.ok(createdAccount);
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transferFunds(
+            @RequestParam Long senderAccountId,
+            @RequestParam Long receiverAccountId,
+            @RequestParam double amount) {
+        accountService.transferFunds(senderAccountId, receiverAccountId, amount);
+        return ResponseEntity.ok("Funds transferred successfully");
     }
 
     @DeleteMapping(path = "/{accountId}/delete")

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,10 +13,12 @@ import java.util.Optional;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     //Retrieves accounts from the repository
@@ -80,5 +83,35 @@ public class AccountService {
         if (balance >= 0 && account.getBalance() != balance) {
             account.setBalance(balance);
         }
+    }
+
+    @Transactional
+    public void transferFunds(Long senderAccountId, Long receiverAccountId, double amount) {
+        Account sender = getAccountById(senderAccountId);
+        Account receiver = getAccountById(receiverAccountId);
+
+        if (sender.getBalance() < amount) {
+            throw new IllegalStateException("Insufficient balance in the sender's account");
+        }
+
+        // Update sender's balance
+        double senderNewBalance = sender.getBalance() - amount;
+        sender.setBalance(senderNewBalance);
+
+        // Create receiver's balance
+        double receiverNewBalance = receiver.getBalance() + amount;
+        receiver.setBalance(receiverNewBalance);
+
+        // Create transaction records
+        Transaction transaction = new Transaction();
+        transaction.setSenderAccount(sender);
+        transaction.setReceiverAccount(receiver);
+        transaction.setAmount(amount);
+        transaction.setTimestamp(LocalDateTime.now());
+
+        // Save changes to database
+        accountRepository.save(sender);
+        accountRepository.save(receiver);
+        transactionRepository.save(transaction);
     }
 }

@@ -2,6 +2,8 @@ package com.example.Bank.Account.Management.System.account;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "account")
 public class Account {
@@ -12,6 +14,13 @@ public class Account {
     private String accountNumber;
     private String name;
     private double balance;
+
+    @OneToMany(mappedBy = "senderAccount")
+    private List<Transaction> sentTransactions;
+
+    @OneToMany(mappedBy = "receiverAccount")
+    private List<Transaction> receivedTransactions;
+
 
     public Account() {
     }
