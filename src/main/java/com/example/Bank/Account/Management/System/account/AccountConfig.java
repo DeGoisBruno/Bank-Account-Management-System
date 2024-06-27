@@ -13,23 +13,23 @@ public class AccountConfig {
     CommandLineRunner commandLineRunner(AccountRepository repository) {
         return args -> {
             // Generate unique account numbers for each account
-            String mikeAccountNumber = generateUniqueAccountNumber(repository);
-            String steveAccountNumber = generateUniqueAccountNumber(repository);
+            String thomasAccountNumber = generateUniqueAccountNumber(repository);
+            String julieAccountNumber = generateUniqueAccountNumber(repository);
 
-            Account mike = new Account(
-                    mikeAccountNumber,
-                    "Mike Bordin",
+            Account thomas = new Account(
+                    thomasAccountNumber,
+                    "Thomas Hedlund",
                     19.90
             );
 
-            Account steve = new Account(
-                    steveAccountNumber,
-                    "Steve Jordan",
+            Account julie = new Account(
+                    julieAccountNumber,
+                    "Julie Christmas",
                     23.75
             );
 
             // Save accounts to the repository
-            repository.saveAll(List.of(mike, steve));
+            repository.saveAll(List.of(thomas, julie));
         };
     }
 

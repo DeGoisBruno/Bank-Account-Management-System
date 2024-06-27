@@ -76,10 +76,10 @@ public class AccountService {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(
                         "Account with id " + id + " does not exist"));
-                if (name != null && !name.isEmpty() &&
+        if (name != null && !name.isEmpty() &&
                 !Objects.equals(account.getName(), name)) {
-                    account.setName(name);
-                }
+            account.setName(name);
+        }
         if (balance >= 0 && account.getBalance() != balance) {
             account.setBalance(balance);
         }
@@ -88,31 +88,76 @@ public class AccountService {
     // Transfers funds from one account to another and records the transaction.
     @Transactional
     public void transferFunds(Long senderAccountId, Long receiverAccountId, double amount) {
+
+        // Retrieve sender and receiver accounts by their IDs
         Account sender = getAccountById(senderAccountId);
         Account receiver = getAccountById(receiverAccountId);
 
         if (sender.getBalance() < amount) {
+            // Check if the sender has enough balance to perform the transfer
             throw new IllegalStateException("Insufficient balance in the sender's account");
         }
 
         // Update sender's balance
         double senderNewBalance = sender.getBalance() - amount;
+        // Deduct the amount from the sender's balance
         sender.setBalance(senderNewBalance);
 
         // Create receiver's balance
         double receiverNewBalance = receiver.getBalance() + amount;
+        // Add the amount to the receiver's balance
         receiver.setBalance(receiverNewBalance);
 
-        // Create transaction records
+        // Create transaction records for this transfer
         Transaction transaction = new Transaction();
         transaction.setSenderAccount(sender);
         transaction.setReceiverAccount(receiver);
         transaction.setAmount(amount);
         transaction.setTimestamp(LocalDateTime.now());
+        saveTransaction(sender, receiver, amount, TransactionType.TRANSFER);
 
-        // Save changes to database
+        // Save sender and receiver accounts
         accountRepository.save(sender);
         accountRepository.save(receiver);
+    }
+
+    // Withdraws funds from an account and records the transaction
+    @Transactional
+    public void withdrawFunds(Long accountId, double amount) {
+        Account account = getAccountById(accountId);
+
+        if (account.getBalance() < amount) {
+            throw new IllegalStateException("Insufficient balance in the account");
+        }
+
+        // Update account balance
+        double newBalance = account.getBalance() - amount;
+        account.setBalance(newBalance);
+
+        saveTransaction(account, null, amount, TransactionType.WITHDRAWAL);
+    }
+
+    // Deposits funds into an account and records the transaction
+    @Transactional
+    public void depositFunds(Long accountId, double amount) {
+        Account account = getAccountById(accountId);
+
+        // Update account balance
+        double newBalance = account.getBalance() + amount;
+        account.setBalance(newBalance);
+
+        saveTransaction(null, account, amount, TransactionType.DEPOSIT);
+    }
+
+    // Saves transaction records
+    private void saveTransaction(Account sender, Account receiver, double amount, TransactionType transactionType) {
+        Transaction transaction = new Transaction();
+        transaction.setSenderAccount(sender);
+        transaction.setReceiverAccount(receiver);
+        transaction.setAmount(amount);
+        transaction.setTimestamp(LocalDateTime.now());
+        transaction.setType(transactionType);
+
         transactionRepository.save(transaction);
     }
 }

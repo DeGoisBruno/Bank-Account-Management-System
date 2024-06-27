@@ -9,7 +9,7 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long transactionId;
 
     @ManyToOne
     @JoinColumn(name = "sender_account_id")
@@ -23,23 +23,29 @@ public class Transaction {
 
     private LocalDateTime timestamp;
 
+    @Enumerated(EnumType.STRING)
+    private TransactionType type; // Enum field for transaction type
+
+    // Default Constructor
     public Transaction(){
     }
 
-    public Transaction(Long id, Account senderAccount, Account receiverAccount, double amount, LocalDateTime timestamp) {
-        this.id = id;
+    // Constructors
+    public Transaction(Long transactionId, Account senderAccount, Account receiverAccount, double amount, LocalDateTime timestamp) {
+        this.transactionId = transactionId;
         this.senderAccount = senderAccount;
         this.receiverAccount = receiverAccount;
         this.amount = amount;
         this.timestamp = timestamp;
     }
 
+    // Getters and Setters
     public Long getId() {
-        return id;
+        return transactionId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 
     public Account getSenderAccount() {
@@ -72,5 +78,13 @@ public class Transaction {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
     }
 }

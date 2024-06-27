@@ -21,16 +21,18 @@ public class Account {
     @OneToMany(mappedBy = "receiverAccount")
     private List<Transaction> receivedTransactions;
 
-
+    // Default Constructor
     public Account() {
     }
 
+    // Constructors
     public Account(String accountNumber, String name, double balance) {
         this.accountNumber = accountNumber;
         this.name = name;
         this.balance = balance;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -43,7 +45,7 @@ public class Account {
         return accountNumber;
     }
 
-    public void setAccountNumber(String accountNumber){
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 
