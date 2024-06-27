@@ -11,7 +11,6 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
-
     private final AccountRepository accountRepository;
 
     @Autowired
@@ -19,10 +18,12 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
+    //Retrieves accounts from the repository
     public List<Account> getAccount() {
         return accountRepository.findAll();
     }
 
+    //Add a new a account to the repository
     public void addNewAccount(Account account) {
         Optional<Account> accountOptional = accountRepository
         .findAccountByAccountNumber(account.getAccountNumber());
@@ -32,6 +33,7 @@ public class AccountService {
         accountRepository.save(account);
     }
 
+    //Deletes an account from the repository by ID
     public void deleteAccount(Long accountId) {
         accountRepository.findById(accountId);
         boolean exists = accountRepository.existsById(accountId);
@@ -41,12 +43,14 @@ public class AccountService {
         accountRepository.deleteById(accountId);
     }
 
+    //Create a new account with a unique account number
     public Account createAccount(Account account) {
         String accountNumber = generateUniqueAccountNumber();
         account.setAccountNumber(accountNumber);
         return accountRepository.save(account);
     }
 
+    //Generates a unique account number by ensuring it doesn't already exists in the repository
     private String generateUniqueAccountNumber() {
         String accountNumber;
         do {
@@ -55,7 +59,15 @@ public class AccountService {
         return accountNumber;
     }
 
+    // Retrieves an account from the repository by ID
+    @Transactional
+    public Account getAccountById(Long id) {
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Account with id " + id + " does not exist"));
+    }
 
+    //Updates the name and balance of an account
+    //If the name or balance provided are valid and different from the existing values, they are updated
     @Transactional
     public void updateAccount(Long id, String name, double balance) {
         Account account = accountRepository.findById(id)
