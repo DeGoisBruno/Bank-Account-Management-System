@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/account")
@@ -63,7 +62,7 @@ public class AccountController {
         accountService.updateAccount(accountId, name, balance);
     }
 
-    //Withdraw funds from an account
+    // Withdraw funds from an account
     @PostMapping("/{accountId}/withdraw")
     public ResponseEntity<String> withdrawFunds(
             @PathVariable("accountId") Long accountId,

@@ -26,7 +26,7 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    // Add a new a account to the repository
+    // Add a new account to the repository
     public void addNewAccount(Account account) {
         Optional<Account> accountOptional = accountRepository
         .findAccountByAccountNumber(account.getAccountNumber());
@@ -53,7 +53,7 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
-    // Generates a unique account number by ensuring it doesn't already exists in the repository
+    // Generates a unique account number by ensuring it doesn't already exist in the repository
     private String generateUniqueAccountNumber() {
         String accountNumber;
         do {
@@ -85,7 +85,7 @@ public class AccountService {
         }
     }
 
-    // Transfers funds from one account to another and records the transaction.
+    // Transfers funds from one account to another and records the transaction
     @Transactional
     public void transferFunds(Long senderAccountId, Long receiverAccountId, double amount) {
 
